@@ -41,44 +41,25 @@ registerForm.onsubmit = async (e) => {
 
   const fullName = document.getElementById("name").value;
   const email = document.getElementById("email").value;
-  const role = document.getElementById("role").value.toLowerCase(); // lowercase for consistency
+  const role = document.getElementById("role").value.toLowerCase();
   const password = passwordInput.value;
 
-  // 1️⃣ Validation Logic
-  document.getElementById("passwordError").classList.add("hidden");
   if (password.length < 8) {
-    document.getElementById("passwordError").classList.remove("hidden");
+    alert("Password must be at least 8 characters.");
     return;
   }
 
-  // 2️⃣ Visual Feedback
   submitBtn.disabled = true;
   btnText.innerText = "Creating Account...";
 
   try {
-    // 3️⃣ Backend API call
-    const res = await fetch("http://localhost:5000/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: fullName, email, password, role })
-    });
+    const data = await apiRequest("/auth/register", "POST", { name: fullName, email, password, role });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Registration failed");
-      submitBtn.disabled = false;
-      btnText.innerText = "Create Account";
-      return;
-    }
-
-    // 4️⃣ Save session in localStorage
     localStorage.setItem(
       "placementor_session",
       JSON.stringify({ token: data.token, user: data.user })
     );
 
-    // 5️⃣ Redirect based on role
     if (data.user.role === "admin") {
       window.location.href = "/frontend/admin/admin-dashboard.html";
     } else if (data.user.role === "recruiter") {
@@ -88,7 +69,7 @@ registerForm.onsubmit = async (e) => {
     }
 
   } catch (err) {
-    alert("Server error. Try again later.");
+    alert(err.message || "Server error. Try again later.");
     console.error("Registration Error:", err);
     submitBtn.disabled = false;
     btnText.innerText = "Create Account";

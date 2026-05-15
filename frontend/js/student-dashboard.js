@@ -1,4 +1,3 @@
-const API_BASE = "http://localhost:5000/api";
 const APPLICATION_KEY = "student_applications";
 
 const session = JSON.parse(localStorage.getItem("placementor_session"));
@@ -7,7 +6,6 @@ if (!session || !session.token || session.user.role !== "student") {
   window.location.href = "../login.html";
 }
 
-const token = session.token;
 const user = session.user;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -27,27 +25,11 @@ function showWelcome() {
 }
 
 async function loadApplications() {
-  try {
-    const res = await fetch(`${API_BASE}/student/applications`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+  const data = await apiRequest("/student/applications", "GET");
 
-    const data = await res.json();
-
-    if (!res.ok || !Array.isArray(data)) {
-      throw new Error("Invalid response");
-    }
-
-    localStorage.setItem(APPLICATION_KEY, JSON.stringify(data));
-    updateStats(data);
-    renderDashboardTable(data);
-
-  } catch (err) {
-    console.error("Dashboard error:", err);
-    alert("Failed to load applications. Please refresh.");
-  }
+  localStorage.setItem(APPLICATION_KEY, JSON.stringify(data));
+  updateStats(data);
+  renderDashboardTable(data);
 }
 
 function updateStats(apps) {

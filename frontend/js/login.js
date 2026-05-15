@@ -30,7 +30,7 @@ toggleBtn.addEventListener("click", () => {
 // -------------------------
 loginForm.addEventListener("submit", async (e) => {
   if (!loginForm.checkValidity()) {
-    return; // validation.js will handle UI
+    return;
   }
 
   e.preventDefault();
@@ -47,18 +47,7 @@ loginForm.addEventListener("submit", async (e) => {
   btnText.innerText = "Authenticating...";
 
   try {
-    const res = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Login failed");
-      return;
-    }
+    const data = await apiRequest("/auth/login", "POST", { email, password, role });
 
     localStorage.setItem(
       "placementor_session",
@@ -75,7 +64,7 @@ loginForm.addEventListener("submit", async (e) => {
 
   } catch (err) {
     console.error("Login Error:", err);
-    alert("Server error. Try again later.");
+    alert(err.message || "Server error. Try again later.");
   } finally {
     loginBtn.disabled = false;
     btnText.innerText = "Sign In";

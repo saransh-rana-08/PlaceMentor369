@@ -1,8 +1,6 @@
 /*********************************
  * CONFIG
  *********************************/
-const API = "http://localhost:5000/api/recruiter";
-
 // Session & token
 const session = JSON.parse(localStorage.getItem("placementor_session"));
 const token = session?.token;
@@ -30,22 +28,11 @@ async function loadApplicants(jobId = null) {
   const tableBody = document.getElementById("recruiter-table-body");
 
   try {
-    let url = `${API}/applications`;
-    if (jobId) url += `?jobId=${jobId}`; // backend should optionally filter by jobId
+    let endpoint = "/recruiter/applications";
+    if (jobId) endpoint += `?jobId=${jobId}`;
 
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (res.status === 401 || res.status === 403) {
-      alert("Session expired. Login again.");
-      return (window.location.href = "login.html");
-    }
-
-    if (!res.ok) throw new Error("Failed to fetch applicants");
-
-    let apps = await res.json();
-    apps = apps.filter(app => app.student && app.job); // safety filter
+    let apps = await apiRequest(endpoint, "GET");
+    apps = apps.filter(app => app.student && app.job);
 
     renderTable(apps);
   } catch (err) {
@@ -118,21 +105,7 @@ function renderTable(apps) {
  *********************************/
 async function updateStatus(applicationId, status) {
   try {
-    const res = await fetch(`${API}/applications/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ applicationId, status }),
-    });
-
-    if (!res.ok) {
-      const errData = await res.json();
-      throw new Error(errData.message || "Failed to update status");
-    }
-
-    // Reload table immediately
+    await apiRequest("/recruiter/applications/status", "PATCH", { applicationId, status });
     loadApplicants();
   } catch (err) {
     console.error("Update status error:", err);
