@@ -57,11 +57,14 @@ function updateCompletion() {
     const branchVal = branchSelect.value ? branchSelect.value.trim().toLowerCase() : "";
     const isBranchValid = branchVal !== "" && branchVal !== "select branch" && branchVal !== "choose your branch";
 
+    const cgpaVal = parseFloat(cgpaInput.value) || 0;
+    const isCgpaValid = cgpaVal > 0;
+
     const filled = [
         fullNameInput.value.trim(),
         rollInput.value.trim(),
         isBranchValid ? branchSelect.value : "",
-        cgpaInput.value,
+        isCgpaValid ? cgpaInput.value : "",
         skills.length > 0,
         resumeBase64
     ].filter(Boolean).length;
