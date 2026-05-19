@@ -162,7 +162,14 @@ resumeInput?.addEventListener("change", async (e) => {
 
         if (profile.branch) {
             Array.from(branchSelect.options).forEach(o => {
-                if (o.text === profile.branch || o.value === profile.branch) o.selected = true;
+                const dbBranch = (profile.branch || "").trim().toLowerCase();
+                const optVal = (o.value || "").trim().toLowerCase();
+                const optText = (o.text || "").trim().toLowerCase();
+                
+                if (dbBranch === optVal || dbBranch === optText || 
+                    (dbBranch && (dbBranch.includes(optText) || optText.includes(dbBranch)))) {
+                    o.selected = true;
+                }
             });
         }
 
@@ -224,7 +231,14 @@ async function loadProfile() {
         cgpaInput.value = profile.cgpa || "";
 
         Array.from(branchSelect.options).forEach(o => {
-            if (o.value === profile.branch || o.text === profile.branch) o.selected = true;
+            const dbBranch = (profile.branch || "").trim().toLowerCase();
+            const optVal = (o.value || "").trim().toLowerCase();
+            const optText = (o.text || "").trim().toLowerCase();
+            
+            if (dbBranch === optVal || dbBranch === optText || 
+                (dbBranch && (dbBranch.includes(optText) || optText.includes(dbBranch)))) {
+                o.selected = true;
+            }
         });
 
         skills = (profile.skills || []).map(s => ({ name: s, level: "Intermediate" }));
