@@ -112,17 +112,17 @@ resumeInput?.addEventListener("change", async (e) => {
     if (file.size > 2 * 1024 * 1024) return showToast("Max 2MB", "error");
 
     const dropArea = document.getElementById("resumeDropArea");
-    const originalHTML = dropArea.innerHTML;
     
-    // Show AI parsing loading state
-    dropArea.innerHTML = `
-        <div class="flex flex-col items-center justify-center py-4">
-            <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-3 animate-spin"></i>
-            <p class="text-blue-600 font-bold">Assistant is reading your resume...</p>
-            <p class="text-xs text-gray-400 mt-1">AI will automatically fill your profile fields</p>
-        </div>
+    // Show AI parsing loading state via a non-destructive absolute overlay
+    const loadingOverlay = document.createElement("div");
+    loadingOverlay.id = "resumeLoadingOverlay";
+    loadingOverlay.className = "absolute inset-0 bg-white/95 rounded-xl flex flex-col items-center justify-center z-10 pointer-events-none";
+    loadingOverlay.innerHTML = `
+        <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-3 animate-spin"></i>
+        <p class="text-blue-600 font-bold">Assistant is reading your resume...</p>
+        <p class="text-xs text-gray-400 mt-1">AI will automatically fill your profile fields</p>
     `;
-    dropArea.style.pointerEvents = "none";
+    dropArea.appendChild(loadingOverlay);
 
     const formData = new FormData();
     formData.append("resume", file);
@@ -174,8 +174,7 @@ resumeInput?.addEventListener("change", async (e) => {
         console.error("AI Parser Error:", err);
         showToast("❌ AI parsing failed: " + err.message, "error");
     } finally {
-        dropArea.innerHTML = originalHTML;
-        dropArea.style.pointerEvents = "auto";
+        document.getElementById("resumeLoadingOverlay")?.remove();
     }
 });
 
