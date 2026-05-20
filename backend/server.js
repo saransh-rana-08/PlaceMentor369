@@ -11,6 +11,10 @@ import recruiterRoutes from "./routes/recruiterRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config({ override: true });
+
+// Initialize Background Workers
+import "./workers/aiWorker.js";
+
 const app = express();
 
 /* ============================
