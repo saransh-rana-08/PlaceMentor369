@@ -85,8 +85,12 @@ export const getAllRecruiterApplications = async (req, res) => {
 ====================================================== */
 export const updateApplicantStatus = async (req, res) => {
   try {
-    const { applicationId } = req.params;
+    const applicationId = req.params.applicationId || req.body.applicationId;
     const { status } = req.body;
+
+    if (!applicationId) {
+      return res.status(400).json({ message: "Application ID is required" });
+    }
 
     const application = await Application.findById(applicationId)
       .populate("student", "name email")
