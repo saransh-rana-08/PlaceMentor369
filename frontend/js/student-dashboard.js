@@ -1,4 +1,3 @@
-const API_BASE = "http://localhost:5000/api";
 const APPLICATION_KEY = "student_applications";
 
 const session = JSON.parse(localStorage.getItem("placementor_session"));
@@ -7,19 +6,11 @@ if (!session || !session.token || session.user.role !== "student") {
   window.location.href = "../login.html";
 }
 
-const token = session.token;
 const user = session.user;
 
 document.addEventListener("DOMContentLoaded", () => {
-
   lucide.createIcons();
-
-  loadTheme();
-
   initDashboard();
-
-  setupThemeToggle();
-
 });
 
 async function initDashboard() {
@@ -74,37 +65,11 @@ function showWelcome() {
 }
 
 async function loadApplications() {
-  try {
-    const res = await fetch(`${API_BASE}/student/applications`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+  const data = await apiRequest("/student/applications", "GET");
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      const message = data?.message || "Failed to load applications";
-      if (res.status === 400 && message.toLowerCase().includes("profile")) {
-        alert("Please complete your student profile first.");
-        window.location.href = "../student/student-profile.html";
-        return;
-      }
-      throw new Error(message);
-    }
-
-    if (!Array.isArray(data)) {
-      throw new Error("Unexpected response format");
-    }
-
-    localStorage.setItem(APPLICATION_KEY, JSON.stringify(data));
-    updateStats(data);
-    renderDashboardTable(data);
-
-  } catch (err) {
-    console.error("Dashboard error:", err);
-    alert(err.message || "Failed to load applications. Please refresh.");
-  }
+  localStorage.setItem(APPLICATION_KEY, JSON.stringify(data));
+  updateStats(data);
+  renderDashboardTable(data);
 }
 
 function updateStats(apps) {
@@ -140,77 +105,4 @@ function attachLogout() {
     localStorage.clear();
     window.location.href = "../login.html";
   });
-}
-// =====================================
-// DARK MODE SYSTEM
-// =====================================
-
-const THEME_KEY = "placementor_theme";
-
-function setupThemeToggle() {
-
-  const themeBtn = document.getElementById("themeToggle");
-
-  themeBtn?.addEventListener("click", () => {
-
-    const isDark =
-      document.body.classList.contains("dark-mode");
-
-    if (isDark) {
-
-      disableDarkMode();
-
-    } else {
-
-      enableDarkMode();
-
-    }
-
-  });
-
-}
-
-function enableDarkMode() {
-
-  document.body.classList.add("dark-mode");
-
-  localStorage.setItem(THEME_KEY, "dark");
-
-  updateThemeButton(true);
-
-}
-
-function disableDarkMode() {
-
-  document.body.classList.remove("dark-mode");
-
-  localStorage.setItem(THEME_KEY, "light");
-
-  updateThemeButton(false);
-
-}
-
-function loadTheme() {
-
-  const savedTheme =
-    localStorage.getItem(THEME_KEY);
-
-  if (savedTheme === "dark") {
-
-    enableDarkMode();
-
-  }
-
-}
-
-function updateThemeButton(isDark) {
-
-  const btn =
-    document.getElementById("themeToggle");
-
-  if (!btn) return;
-
-  btn.innerText =
-    isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
-
 }

@@ -4,10 +4,6 @@ import Job from "../models/job.js";
 import Application from "../models/application.js"; // make sure file name matches exactly
 import { analyzeResume } from "../utils/gemini.js";
 import { PDFParse } from "pdf-parse";
-import { Queue } from "bullmq";
-import connection from "../config/redis.js";
-
-const aiQueue = connection ? new Queue('ai-analysis-queue', { connection }) : null;
 
 /* ============================
    GET STUDENT PROFILE
@@ -167,22 +163,7 @@ export const uploadResume = async (req, res) => {
     const parser = new PDFParse({ data: req.file.buffer });
     const result = await parser.getText();
     const resumeText = result.text;
-    const base64Resume = `data:application/pdf;base64,${req.file.buffer.toString("base64")}`;
 
-    // 2. Add job to background queue if Redis is configured
-    if (aiQueue) {
-      await aiQueue.add('parse-resume', {
-        userId: req.user.id,
-        resumeText,
-        base64Resume
-      });
-      return res.status(202).json({
-        message: "Resume uploaded successfully. AI is processing your profile in the background!",
-        processing: true
-      });
-    }
-
-    // --- FALLBACK (Synchronous Processing if Redis is absent) ---
     // 2. Call Gemini AI
     const aiResult = await analyzeResume(resumeText);
 
@@ -202,7 +183,7 @@ export const uploadResume = async (req, res) => {
     if (aiResult.cgpa !== undefined && aiResult.cgpa !== null) student.cgpa = aiResult.cgpa;
     
     // Direct persistence of the uploaded PDF file as base64
-    student.resume = base64Resume;
+    student.resume = `data:application/pdf;base64,${req.file.buffer.toString("base64")}`;
     
     // Merge skills (unique)
     if (aiResult.skills && aiResult.skills.length > 0) {
