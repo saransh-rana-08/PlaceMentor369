@@ -228,3 +228,32 @@ Thanks to all the amazing people who contributed to this project ❤️
 ## 🌐 Live Demo
 - **Live Site:** https://place-mentor369.vercel.app
 
+
+## 🐳 Run with Docker (Recommended)
+
+No need to install Node.js or MongoDB manually.
+
+**Prerequisites:** [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+```bash
+# Clone the repo
+git clone https://github.com/NileshBagade734-ux/PlaceMentor369.git
+cd PlaceMentor369
+
+# Start everything (backend + MongoDB)
+docker-compose up
+```
+
+Backend will be available at `http://localhost:5000`
+
+To stop:
+```bash
+docker-compose down
+```
+
+To reset the database volume:
+```bash
+docker-compose down -v
+```
+
+> **Note:** The frontend is plain HTML — open `frontend/index.html` via a static server or VS Code Live Server after the backend is running.
