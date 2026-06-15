@@ -429,3 +429,365 @@ body.dark-mode .resume-left p{
   color:#cbd5e1;
 }
 
+.salary-section{
+    padding:100px 0;
+}
+
+.salary-card{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:50px;
+    align-items:center;
+}
+
+.salary-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 16px;
+    background:#dcfce7;
+    color:#15803d;
+    border-radius:999px;
+    font-weight:600;
+}
+
+.salary-left h2{
+    margin-top:20px;
+    font-size:42px;
+    line-height:1.2;
+}
+
+.salary-left p{
+    margin-top:15px;
+    color:#6b7280;
+    line-height:1.8;
+}
+
+.salary-features{
+    margin-top:25px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.salary-feature{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:500;
+}
+
+.salary-feature i{
+    color:#16a34a;
+}
+
+.salary-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-top:30px;
+    padding:14px 28px;
+    background:#16a34a;
+    color:white;
+    text-decoration:none;
+    border-radius:12px;
+    font-weight:600;
+    transition:.3s;
+}
+
+.salary-btn:hover{
+    background:#15803d;
+    transform:translateY(-3px);
+}
+
+.salary-preview{
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 15px 30px rgba(0,0,0,.08);
+    text-align:center;
+}
+
+.salary-amount{
+    font-size:48px;
+    font-weight:700;
+    color:#16a34a;
+    margin:20px 0;
+}
+
+.salary-range{
+    margin-top:15px;
+    padding:10px;
+    background:#f0fdf4;
+    border-radius:10px;
+}
+body.dark-mode .salary-preview{
+    background:#1e293b;
+    color:white;
+}
+
+body.dark-mode .salary-left p{
+    color:#cbd5e1;
+}
+
+body.dark-mode .salary-left h2{
+    color:white;
+}
+
+body.dark-mode .salary-range{
+    background:#14532d;
+    color:white;
+.feature-card{
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 40px;
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff, #f8faff);
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.feature-card:hover{
+    transform: translateY(-8px);
+    box-shadow: 0 25px 45px rgba(79,70,229,0.15);
+}
+
+.feature-card i{
+    font-size: 3rem;
+    color: #4f46e5;
+    margin-bottom: 20px;
+    background: #eef2ff;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-card h3{
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #111827;
+}
+
+.feature-card p{
+    max-width: 650px;
+    margin: 0 auto 25px;
+    color: #6b7280;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.feature-card .btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #4f46e5;
+    color: white;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.feature-card .btn:hover{
+    background: #3730a3;
+    transform: translateY(-3px);
+}
+body.dark-mode .feature-card{
+    background: #1e293b;
+    border: 1px solid #334155;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+body.dark-mode .feature-card h3{
+    color: white;
+}
+
+body.dark-mode .feature-card p{
+    color: #cbd5e1;
+}
+
+.placement-funnel,
+.branch-stats,
+.salary-section,
+.recruiters,
+.achievements{
+    padding:80px 0;
+}
+
+.placement-funnel h2,
+.branch-stats h2,
+.salary-section h2,
+.recruiters h2,
+.achievements h2{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.funnel-grid,
+.recruiter-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:20px;
+}
+
+.funnel-card,
+.recruiter-card{
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    text-align:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+}
+
+.branch-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.branch-table th,
+.branch-table td{
+    padding:15px;
+    border-bottom:1px solid #ddd;
+    text-align:center;
+}
+.chart-container{
+    max-width:900px;
+    margin:40px auto;
+}
+
+.bar-row{
+    display:flex;
+    align-items:center;
+    margin:25px 0;
+    gap:20px;
+}
+
+.bar-row span{
+    width:120px;
+    font-weight:600;
+}
+
+.bar{
+    flex:1;
+    height:35px;
+    background:#e5e7eb;
+    border-radius:50px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding-right:15px;
+    color:white;
+    font-weight:600;
+    border-radius:50px;
+}
+
+.cse{width:92%;background:#4f46e5;}
+.it{width:88%;background:#6366f1;}
+.ece{width:84%;background:#7c3aed;}
+.eee{width:79%;background:#8b5cf6;}
+.mech{width:72%;background:#a855f7;}
+.journey-section{
+    padding:80px 0;
+    text-align:center;
+}
+
+.journey-timeline{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-top:50px;
+}
+
+.step{
+    text-align:center;
+}
+
+.circle{
+    width:70px;
+    height:70px;
+    background:#4f46e5;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:24px;
+    font-weight:bold;
+    margin:auto;
+}
+
+.line{
+    width:80px;
+    height:4px;
+    background:#4f46e5;
+}
+.recruiters-section{
+    padding:80px 0;
+    text-align:center;
+}
+
+.recruiters-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:25px;
+    margin-top:40px;
+}
+
+.recruiter-card{
+    background:white;
+    padding:30px 20px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    transition:all .3s ease;
+    cursor:pointer;
+}
+
+.recruiter-card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 20px 40px rgba(79,70,229,.2);
+}
+
+.recruiter-card i{
+    font-size:48px;
+    color:#4f46e5;
+    margin-bottom:15px;
+}
+
+.recruiter-card h4{
+    margin:0;
+    font-size:18px;
+}
+.recruiters-grid{
+    display:flex;
+    gap:20px;
+    overflow-x:auto;
+    padding:10px;
+}
+
+.recruiter-card{
+    min-width:220px;
+    flex-shrink:0;
+}
+body.dark-mode .recruiter-card{
+    background:#1e293b;
+    color:white;
+}
+
+body.dark-mode .recruiter-card:hover{
+    box-shadow:0 20px 40px rgba(124,58,237,0.35);
+body.dark-mode .feature-card i{
+    background: #312e81;
+    color: #c4b5fd;
+}

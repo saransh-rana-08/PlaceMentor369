@@ -3,11 +3,14 @@ import Student from "../models/student.js";
 import Job from "../models/job.js";
 import Application from "../models/application.js"; // make sure file name matches exactly
 import {
-  analyzeSkillGap,
   getDetailedSkillGap,
   getAggregateSkillGaps
 } from "../utils/skillGapAnalysis.js";
+
 import { getResourcesForSkills } from "../utils/learningResources.js";
+
+import { analyzeResume } from "../utils/gemini.js";
+import { PDFParse } from "pdf-parse";
 
 /* ============================
    GET STUDENT PROFILE
@@ -121,7 +124,7 @@ export const applyJob = async (req, res) => {
 export const getApplications = async (req, res) => {
   try {
     const studentProfile = await Student.findOne({ user: req.user.id });
-    if (!studentProfile) return res.status(400).json({ message: "Profile not found" });
+    if (!studentProfile) return res.status(200).json([]);
 
     const apps = await Application.find({ student: studentProfile._id }).populate({
       path: "job",
@@ -156,7 +159,6 @@ export const getJobApplications = async (req, res) => {
 
 /* ============================
    GET SKILL GAP ANALYSIS FOR SPECIFIC JOB
-============================ */
 export const getSkillGapForJob = async (req, res) => {
   try {
     const { jobId } = req.params;
@@ -226,7 +228,6 @@ export const getSkillGapForJob = async (req, res) => {
 
 /* ============================
    GET PERSONALIZED LEARNING PATHS (ALL APPROVED JOBS)
-============================ */
 export const getLearningPaths = async (req, res) => {
   try {
     // Get student profile
@@ -295,5 +296,61 @@ export const getLearningPaths = async (req, res) => {
   } catch (err) {
     console.error("GET LEARNING PATHS ERROR:", err);
     res.status(500).json({ message: "Failed to generate learning paths" });
+   UPLOAD RESUME & AI PARSE (Phase 1 & 2)
+export const uploadResume = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No resume file uploaded" });
+    }
+
+    // 1. Extract text from PDF
+    const parser = new PDFParse({ data: req.file.buffer });
+    const result = await parser.getText();
+    const resumeText = result.text;
+
+    // 2. Call Gemini AI
+    const aiResult = await analyzeResume(resumeText);
+
+    // 3. Update Student Profile
+    let student = await Student.findOne({ user: req.user.id });
+    if (!student) {
+      student = new Student({ user: req.user.id });
+    }
+
+    // Auto-Onboarding
+    if (aiResult.firstName || aiResult.lastName) {
+      student.name = `${aiResult.firstName || ""} ${aiResult.lastName || ""}`.trim();
+    }
+    if (aiResult.roll) student.roll = aiResult.roll;
+    if (aiResult.college) student.college = aiResult.college;
+    if (aiResult.branch) student.branch = aiResult.branch;
+    if (aiResult.cgpa !== undefined && aiResult.cgpa !== null) student.cgpa = aiResult.cgpa;
+    
+    // Direct persistence of the uploaded PDF file as base64
+    student.resume = `data:application/pdf;base64,${req.file.buffer.toString("base64")}`;
+    
+    // Merge skills (unique)
+    if (aiResult.skills && aiResult.skills.length > 0) {
+       const mergedSkills = new Set([...student.skills, ...aiResult.skills]);
+       student.skills = Array.from(mergedSkills);
+    }
+
+    student.aiReadinessScore = aiResult.aiReadinessScore || 0;
+    student.aiRoadmap = aiResult.aiRoadmap || [];
+
+    await student.save();
+
+    res.status(200).json({
+      message: "Resume parsed and profile updated successfully via AI",
+      student: {
+        ...student.toObject(),
+        firstName: aiResult.firstName || "",
+        lastName: aiResult.lastName || ""
+      }
+    });
+
+  } catch (err) {
+    console.error("UPLOAD RESUME ERROR:", err);
+    res.status(500).json({ message: err.message || "Failed to process resume" });
   }
 };
