@@ -85,11 +85,18 @@ export const getAllRecruiterApplications = async (req, res) => {
 ====================================================== */
 export const updateApplicantStatus = async (req, res) => {
   try {
-    const { applicationId } = req.params;
+    const applicationId = req.body.applicationId || req.params.applicationId;
     const { status } = req.body;
 
     const application = await Application.findById(applicationId)
-      .populate("student", "name email")
+      .populate({
+        path: "student",
+        select: "name user",
+        populate: {
+          path: "user",
+          select: "email"
+        }
+      })
       .populate("job", "title company");
 
     if (!application) {
@@ -100,13 +107,20 @@ export const updateApplicantStatus = async (req, res) => {
     await application.save();
 
     if (status === "shortlisted" || status === "rejected") {
-      sendStatusUpdateEmail(
-        application.student.email,
-        application.student.name,
-        application.job.title,
-        application.job.company,
-        status
-      );
+      const studentEmail = application.student?.user?.email;
+      const studentName = application.student?.name || "Student";
+
+      if (studentEmail) {
+        sendStatusUpdateEmail(
+          studentEmail,
+          studentName,
+          application.job.title,
+          application.job.company,
+          status
+        );
+      } else {
+        console.warn(`⚠️ Warning: No email address found for student: ${studentName}`);
+      }
     }
 
     return res.status(200).json({
